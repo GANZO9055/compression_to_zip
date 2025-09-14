@@ -2,12 +2,16 @@
 #include <filesystem>
 #include <queue>
 #include <fstream>
+#include <mutex>
 #include <string>
+#include <thread>
+
 #include "miniz.h"
 
 using namespace std;
 
 queue<string> queueFiles;
+mutex queueMutex;
 
 vector<char> readFile(const string& fileName) {
     ifstream file(fileName, ios::binary);
@@ -48,7 +52,6 @@ void compressionToZip(const string& fileName) {
         throw runtime_error("Error add file in zip");
     }
 
-    mz_zip_writer_finalize_archive(&zip);
     mz_zip_writer_end(&zip);
 
     cout << "Compression finish: " << zipName << endl;
@@ -56,13 +59,44 @@ void compressionToZip(const string& fileName) {
 }
 
 void readQueue() {
-    while (!queueFiles.empty()) {
-        string pathFile = queueFiles.front();
-        queueFiles.pop();
+    while (true) {
+
+        string pathFile;
+        {
+            lock_guard<mutex> lock(queueMutex);
+            if (queueFiles.empty()) {
+                return;
+            }
+            pathFile = queueFiles.front();
+            queueFiles.pop();
+        }
 
         cout << "path file: " << pathFile << endl;
 
-        compressionToZip(pathFile);
+        try {
+            compressionToZip(pathFile);
+        } catch (const exception& e) {
+            cerr << "Error compression file to zip: " << e.what() << endl;
+        }
+    }
+}
+
+void createThreads() {
+    unsigned int numberThreads = thread::hardware_concurrency();
+    if (numberThreads == 0) {
+        numberThreads = 2;
+    }
+    cout << "Number threads: " << numberThreads << endl;
+
+    vector<thread> threads;
+    threads.reserve(numberThreads);
+
+    for (int i = 0; i < numberThreads; i++) {
+        threads.emplace_back(readQueue);
+    }
+
+    for (auto& t : threads) {
+        t.join();
     }
 }
 
@@ -78,7 +112,9 @@ int main()
         }
     }
 
-    readQueue();
+    createThreads();
+
+    cout << "All files compressed!" << endl;
 
     return 0;
 }
