@@ -26,9 +26,32 @@ vector<char> readFile(const string& fileName) {
 
 void compressionToZip(const string& fileName) {
     vector<char> dataFile = readFile(fileName);
+    string zipName = fileName + ".zip";
 
+    mz_zip_archive zip;
+    memset(&zip, 0, sizeof(zip));
 
+    if (!mz_zip_writer_init_file(&zip, zipName.c_str(), 0)) {
+        throw runtime_error("Error create zip: " + zipName);
+    }
 
+    string simpleName = filesystem::path(fileName).filename().string();
+
+    if (!mz_zip_writer_add_mem(
+        &zip,
+        simpleName.c_str(),
+        dataFile.data(),
+        dataFile.size(),
+        MZ_BEST_COMPRESSION)
+        ) {
+        mz_zip_writer_end(&zip);
+        throw runtime_error("Error add file in zip");
+    }
+
+    mz_zip_writer_finalize_archive(&zip);
+    mz_zip_writer_end(&zip);
+
+    cout << "Compression finish: " << zipName << endl;
 
 }
 
@@ -36,6 +59,8 @@ void readQueue() {
     while (!queueFiles.empty()) {
         string pathFile = queueFiles.front();
         queueFiles.pop();
+
+        cout << "path file: " << pathFile << endl;
 
         compressionToZip(pathFile);
     }

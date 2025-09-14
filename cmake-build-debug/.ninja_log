@@ -1,3 +1,15 @@
 # ninja log v6
-29	1193	7795380635025400	CMakeFiles/compression_to_zip.dir/main.cpp.obj	95c77700f3882711
+6	982	7795461285087851	CMakeFiles/compression_to_zip.dir/main.cpp.obj	95c77700f3882711
+13	337	7795461708801488	build.ninja	5ca9ecfe46abb72d
 1195	1582	7795380646688781	compression_to_zip.exe	629b45fcef274b6d
+36	1119	7795461766629398	CMakeFiles/compression_to_zip.dir/miniz.c.obj	2ec3fbf0eaf6d97b
+25	966	7795462538757597	CMakeFiles/compression_to_zip.dir/main.cpp.obj	95c77700f3882711
+967	1153	7795462548183342	compression_to_zip.exe	ba947128521de7b4
+25	981	7795463409773951	CMakeFiles/compression_to_zip.dir/main.cpp.obj	95c77700f3882711
+982	1160	7795463419343948	compression_to_zip.exe	ba947128521de7b4
+26	985	7795465311571967	CMakeFiles/compression_to_zip.dir/main.cpp.obj	95c77700f3882711
+986	1169	7795465321171919	compression_to_zip.exe	ba947128521de7b4
+6	977	7795466370016575	CMakeFiles/compression_to_zip.dir/main.cpp.obj	95c77700f3882711
+977	1157	7795466379721770	compression_to_zip.exe	ba947128521de7b4
+25	993	7795466512542008	CMakeFiles/compression_to_zip.dir/main.cpp.obj	95c77700f3882711
+994	1175	7795466522231823	compression_to_zip.exe	ba947128521de7b4
